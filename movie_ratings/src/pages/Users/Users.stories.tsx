@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Users from './Users';
+import Users from "./Users";
 
 export default {
   title: "Users",
@@ -8,5 +8,5 @@ export default {
 export const Default = () => <Users />;
 
 Default.story = {
-  name: 'default',
+  name: "default",
 };

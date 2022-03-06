@@ -1,10 +1,17 @@
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import React from 'react';
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import React from "react";
 
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { HomePage } from './pages/Home';
-import Users from './pages/Users/Users';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { HomePage } from "./pages/Home";
+import Users from "./pages/Users/Users";
 
 const App = () => {
   return (
@@ -24,7 +31,14 @@ const App = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Movie Reviews
             </Typography>
-            <Button color="inherit" onClick={() => { window.location.href="/" }}>Login</Button>
+            <Button
+              color="inherit"
+              onClick={() => {
+                window.location.href = "/";
+              }}
+            >
+              Login
+            </Button>
           </Toolbar>
         </AppBar>
       </Box>
@@ -34,6 +48,6 @@ const App = () => {
       </Switch>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
