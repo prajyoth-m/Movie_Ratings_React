@@ -1,138 +1,177 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import EditIcon from "@mui/icons-material/Edit";
+import Paper from "@mui/material/Paper";
+import InputBase from "@mui/material/InputBase";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+import DirectionsIcon from "@mui/icons-material/Directions";
 import axios from "axios";
+import { CardContent, Stack } from "@mui/material";
 
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean;
+class User {
+  username: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+  email: string;
+  phone: BigInteger;
+  department: string;
+
+  constructor(
+    username: string,
+    firstname: string,
+    lastname: string,
+    password: string,
+    email: string,
+    phone: BigInteger,
+    department: string
+  ) {
+    this.username = username;
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.password = password;
+    this.email = email;
+    this.phone = phone;
+    this.department = department;
+  }
 }
 
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
 export default function UsersCard() {
-  const [expanded, setExpanded] = React.useState(false);
   const [state, setState] = React.useState({
     cardElevation: 2,
+    users: Array<User>(),
   });
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const handleDeleteClick = (username: string) => {
+    console.log("delete this user " + username);
   };
 
   React.useEffect(() => {
-    axios.get("");
-  });
+    axios.get("/user-services/users").then((res) => {
+      let data = res.data;
+      setState((s) => ({
+        ...s,
+        users: data.map(
+          (usr: {
+            username: string;
+            firstname: string;
+            lastname: string;
+            password: string;
+            email: string;
+            phone: Uint8Array;
+            department: string;
+          }) => {
+            return new User(
+              usr.username,
+              usr.firstname,
+              usr.lastname,
+              usr.password,
+              usr.email,
+              usr.phone,
+              usr.department
+            );
+          }
+        ),
+      }));
+    });
+  }, []);
 
   return (
     <div>
-      <Card
-        sx={{ maxWidth: 345, marginLeft: "2rem", marginTop: "2rem" }}
-        elevation={state.cardElevation}
-        onMouseOver={() => {
-          setState({ ...state, cardElevation: 8 });
-        }}
-        onMouseOut={() => {
-          setState({ ...state, cardElevation: 2 });
+      <div
+        style={{
+          marginLeft: "2rem",
+          marginTop: "2rem",
+          marginRight: "2rem",
+          width: "100%",
         }}
       >
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-              R
-            </Avatar>
-          }
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title="Shrimp and Chorizo Paella"
-          subheader="September 14, 2016"
-        />
-        <CardMedia
-          component="img"
-          height="194"
-          image="/static/images/cards/paella.jpg"
-          alt="Paella dish"
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            This impressive paella is a perfect party dish and a fun meal to
-            cook together with your guests. Add 1 cup of frozen peas along with
-            the mussels, if you like.
-          </Typography>
-        </CardContent>
-        <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
+        <Paper
+          component="form"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: "95%",
+          }}
+        >
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Search Google Maps"
+            inputProps={{ "aria-label": "search google maps" }}
+          />
+          <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
+            <SearchIcon />
           </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
+          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+          <IconButton
+            color="primary"
+            sx={{ p: "10px" }}
+            aria-label="directions"
           >
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Typography paragraph>Method:</Typography>
-            <Typography paragraph>
-              Heat 1/2 cup of the broth in a pot until simmering, add saffron
-              and set aside for 10 minutes.
-            </Typography>
-            <Typography paragraph>
-              Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
-              over medium-high heat. Add chicken, shrimp and chorizo, and cook,
-              stirring occasionally until lightly browned, 6 to 8 minutes.
-              Transfer shrimp to a large plate and set aside, leaving chicken
-              and chorizo in the pan. Add pimentón, bay leaves, garlic,
-              tomatoes, onion, salt and pepper, and cook, stirring often until
-              thickened and fragrant, about 10 minutes. Add saffron broth and
-              remaining 4 1/2 cups chicken broth; bring to a boil.
-            </Typography>
-            <Typography paragraph>
-              Add rice and stir very gently to distribute. Top with artichokes
-              and peppers, and cook without stirring, until most of the liquid
-              is absorbed, 15 to 18 minutes. Reduce heat to medium-low, add
-              reserved shrimp and mussels, tucking them down into the rice, and
-              cook again without stirring, until mussels have opened and rice is
-              just tender, 5 to 7 minutes more. (Discard any mussels that don’t
-              open.)
-            </Typography>
-            <Typography>
-              Set aside off of the heat to let rest for 10 minutes, and then
-              serve.
-            </Typography>
-          </CardContent>
-        </Collapse>
-      </Card>
+            <DirectionsIcon />
+          </IconButton>
+        </Paper>
+      </div>
+      <Stack
+        direction="row"
+        spacing={4}
+        sx={{ marginTop: "2rem", marginLeft: "2rem" }}
+      >
+        {state.users.map((el, idx) => (
+          <Card
+            key={idx}
+            sx={{
+              minWidth: 300,
+              boxShadow: 4,
+              ":hover": {
+                boxShadow: 20,
+              },
+            }}
+          >
+            <CardHeader
+              avatar={
+                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                  {el.username.substring(0, 1).toUpperCase()}
+                </Avatar>
+              }
+              action={
+                <div>
+                  <IconButton aria-label="edit">
+                    <EditIcon fontSize="medium" />
+                  </IconButton>
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => {
+                      handleDeleteClick(el.username);
+                    }}
+                  >
+                    <DeleteRoundedIcon fontSize="medium" />
+                  </IconButton>
+                </div>
+              }
+              title={el.username + " " + el.lastname}
+              subheader={el.department}
+            />
+            <CardContent>
+              <ul>
+                <li>
+                  Phone:
+                  {el.phone}
+                </li>
+                <li>Email: {el.email}</li>
+                <li>Username: {el.username}</li>
+              </ul>
+            </CardContent>
+          </Card>
+        ))}
+      </Stack>
     </div>
   );
 }
