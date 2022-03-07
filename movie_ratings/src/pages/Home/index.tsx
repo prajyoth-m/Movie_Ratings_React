@@ -13,17 +13,19 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { FormControl, TextField } from "@mui/material";
+import axios from "axios";
 
 export function HomePage() {
   const history = useHistory();
   const [state, setState] = React.useState({
     username: "",
     password: "",
+    error:false,
     showPassword: false,
   });
 
   const handleChange = (prop: any) => (event: any) => {
-    setState({ ...state, [prop]: event.target.value });
+    setState({ ...state, [prop]: event.target.value,error: false });
   };
 
   const handleClickShowPassword = () => {
@@ -41,7 +43,25 @@ export function HomePage() {
     let username = state.username;
     let password = state.password;
     console.log(username, password);
-    history.push("/users");
+    axios
+      .post("/user-services/user/validate", {
+        username: username,
+        password: password,
+      })
+      .then((res) => {
+        if (res.data.passwordAccepted) {
+          history.push("/users");
+          setState({
+            ...state,
+            error: false,
+          });
+        }else{
+          setState({
+            ...state,
+            error: true,
+          });
+        }
+      });
   };
 
   return (
@@ -68,8 +88,10 @@ export function HomePage() {
           label="Username"
           fullWidth
           sx={{ marginTop: "2rem" }}
+          error={state.error}
           value={state.username}
           onChange={handleChange("username")}
+          helperText={state.error?"Incorrect username/password provided":""}
         />
         <FormControl sx={{ marginTop: "2rem" }} variant="outlined" fullWidth>
           <InputLabel htmlFor="outlined-adornment-password">
@@ -80,6 +102,7 @@ export function HomePage() {
             type={state.showPassword ? "text" : "password"}
             value={state.password}
             onChange={handleChange("password")}
+            error={state.error}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
