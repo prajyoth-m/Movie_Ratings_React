@@ -24,7 +24,7 @@ import IconButton from "@mui/material/IconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import axios from "axios";
-import StarIcon from '@mui/icons-material/Star';
+import StarIcon from "@mui/icons-material/Star";
 
 interface MoviesProps {}
 
@@ -136,14 +136,19 @@ const Movies: FC<MoviesProps> = () => {
                       label={el}
                       color="primary"
                       variant="outlined"
-                      sx={{marginRight:"0.5rem"}}
+                      sx={{ marginRight: "0.5rem" }}
                     />
                   ))}
                   <Chip
                     key={idx}
                     label={"Rating: " + el.rating}
-                    color={parseFloat(el.rating)>5?"success":"error"}
-                    variant="outlined"
+                    color={
+                      parseFloat(el.rating) > 5
+                        ? parseFloat(el.rating) > 8
+                          ? "success"
+                          : "warning"
+                        : "error"
+                    }
                     icon={<StarIcon />}
                   />
                 </Grid>
