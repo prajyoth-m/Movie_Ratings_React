@@ -13,6 +13,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import axios from "axios";
 import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
   CardContent,
   FormControl,
   MenuItem,
@@ -35,6 +38,13 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import GroupIcon from "@mui/icons-material/Group";
+import MovieIcon from "@mui/icons-material/Movie";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { useHistory } from "react-router-dom";
 
 class User {
   username: string;
@@ -74,6 +84,9 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function UsersCard() {
+
+  const history = useHistory();
+
   const [state, setState] = React.useState({
     cardElevation: 2,
     username: "",
@@ -116,7 +129,7 @@ export default function UsersCard() {
         state.phone,
         state.department
       );
-      axios.post("/user-services/user", user).then(res=>{
+      axios.post("/user-services/user", user).then((res) => {
         if (res.data.success) {
           refresh();
         }
@@ -183,20 +196,31 @@ export default function UsersCard() {
     });
   }, []);
 
+  const redirect = (val: any) => {
+    history.push(val);
+  };
+
   return (
     <div>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Users Management
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Box>
       <div
         style={{
-          marginLeft: "2rem",
+          paddingLeft: "2rem",
           marginTop: "2rem",
-          marginRight: "2rem",
-          width: "100%",
+          width: "96%",
         }}
       >
         <Paper
           component="form"
           sx={{
-            p: "2px 4px",
             display: "flex",
             alignItems: "center",
             width: "95%",
@@ -276,7 +300,7 @@ export default function UsersCard() {
       <Fab
         color="primary"
         aria-label="add"
-        sx={{ position: "absolute", bottom: "3.5rem", right: "3.5rem" }}
+        sx={{ position: "absolute", bottom: "7rem", right: "3.5rem" }}
         onClick={handleClickOpen}
       >
         <AddIcon />
@@ -380,6 +404,18 @@ export default function UsersCard() {
           <Button onClick={() => handleClose("save")}>Save</Button>
         </DialogActions>
       </Dialog>
+      <Box sx={{ width: "100%", position: "fixed", bottom: 0 }}>
+        <BottomNavigation
+          showLabels
+          onChange={(event, newValue) => {
+            redirect(newValue);
+          }}
+        >
+          <BottomNavigationAction label="Users" value="/users" icon={<GroupIcon />} />
+          <BottomNavigationAction label="Movies" value="/movies" icon={<MovieIcon />} />
+          <BottomNavigationAction label="Logout" value="/" icon={<LogoutIcon />} />
+        </BottomNavigation>
+      </Box>
     </div>
   );
 }
